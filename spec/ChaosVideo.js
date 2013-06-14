@@ -87,8 +87,22 @@
             asyncNativeEvent('pause').call(this);
         };
 
-        node.controllerplay = node.play;
-        node.controllerpause = node.pause;
+        node.controllerplay = function () {
+            asyncNativeEvent('click').call(this);
+            node.play();
+        };
+        node.controllerpause = function () {
+            asyncNativeEvent('click').call(this);
+            node.pause();
+        };
+        node.controllertapplay = function () {
+            asyncNativeEvent('touchend').call(this);
+            node.play();
+        };
+        node.controllertappause = function () {
+            asyncNativeEvent('touchend').call(this);
+            node.pause();
+        };
 
         return node;
     };

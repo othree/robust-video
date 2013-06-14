@@ -30,19 +30,17 @@
             pause: node.pause
         };
         var robust = {
-            paused: true,
-            postpaused: false,
             play: function () {
-                if (!robust.paused) { return; }
-                robust.paused = false;
-                robust.postpaused = false;
+                if (!states.paused) { return; }
+                states.paused = false;
                 native.play.call(node);
+                node.dispatchEvent(eventFactory('$play'));
             },
             pause: function () {
-                if (robust.paused) { return; }
-                robust.paused = true;
-                robust.postpaused = true;
+                if (states.paused) { return; }
+                states.paused = true;
                 native.pause.call(node);
+                node.dispatchEvent(eventFactory('$pause'));
             },
         };
 
@@ -51,23 +49,30 @@
             node[method] = robust[method];
         }
 
+        var controlling = false;
+        var toggleControlling = function () {
+            controlling = true;
+            setTimeout(function () { controlling = false; }, 1);
+        };
+        node.addEventListener('click', toggleControlling, false);
+        node.addEventListener('touchend', toggleControlling, false);
+
         node.addEventListener('play', function (event) {
-            if (robust.postpaused) {
+            if (controlling) {
+                if (!states.paused) { return; }
+                node.dispatchEvent(eventFactory('$play'));
+                states.paused = false;
+            } else if (states.paused) {
                 native.pause.call(node);
             }
-            if (!states.paused) {
-                return;
-            }
-            states.paused = false;
-            node.dispatchEvent(eventFactory('$play'));
         }, false);
 
         node.addEventListener('pause', function () {
-            if (states.paused) {
-                return;
+            if (controlling) {
+                if (states.paused) { return; }
+                node.dispatchEvent(eventFactory('$ause'));
+                states.paused = true;
             }
-            states.paused = true;
-            node.dispatchEvent(eventFactory('$pause'));
         }, false);
 
         node.addEventListener('ended', function () {
