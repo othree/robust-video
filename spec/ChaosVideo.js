@@ -16,31 +16,41 @@
                     handler.call(node);
                 }
                 node.dispatchEvent(nativeEvent(type));
-            }, 10);
+            }, 1);
         };
     };
-    var availableOptions = ['twiceplay', 'loop'];
+    var availableOptions = ['twiceplay', 'noloop', 'unstoppable', 'loading', 'immeplaying'];
 
     root.ChaosVideo = function (options) {
         options = typeof options === 'object' ? options : {};
 
-        var option = '';
+        var option = '',
+            key = '';
         for (option in availableOptions) {
-            options[option] = options[option] !== undefined ? options[option] : false;
+            key = availableOptions[option];
+            options[key] = options[key] !== undefined ? options[key] : false;
         }
 
-        var div = document.createElement('div');
-        div.paused = true;
-        div.currentTime = 0;
+        var node = document.createElement('node');
+        node.paused = true;
+        node.currentTime = 0;
+        node.loop = false;
+        if (options.noloop) {
+            node.loop = undefined;
+        }
 
         var playingTimer = 0;
         var playing = function () {
-            if (div.currentTime > 5) {
-                asyncNativeEvent('ended').call(div);
+            if (node.currentTime > 5 && !node.loop) {
+                asyncNativeEvent('ended').call(node);
+                node.pause();
             } else {
+                if (node.currentTime > 5) {
+                    node.currentTime = 0;
+                }
                 asyncNativeEvent('timeupdate', function () {
-                    this.currentTime += 0.1;
-                }).call(div);
+                    this.currentTime += 0.3;
+                }).call(node);
                 playingTimer = setTimeout(playing, 50);
             }
         };
@@ -48,27 +58,41 @@
             playingTimer = setTimeout(playing, 5);
         };
 
-        div.play = function () {
-            div.paused = false;
+        node.play = function () {
             asyncNativeEvent('play').call(this);
+            if ((options.loading && options.immeplaying) || !options.loading) {
+                asyncNativeEvent('playing').call(this);
+            }
             //Some old browser will trigger play event while canplay
-            if (options.twiceplay) {
+            if (options.loading) {
+                var that = this;
                 setTimeout(function () {
-                    asyncNativeEvent('play').call(this);
-                    console.log('trigger play twice');
-                    startPlay();
+                    if (options.unstoppable || !node.paused) {
+                        if (options.loading && !options.immeplaying) {
+                            asyncNativeEvent('playing').call(that);
+                        }
+                        asyncNativeEvent('play').call(that);
+                        startPlay();
+                    }
                 }, 100);
             } else {
                 startPlay();
             }
         };
-        div.pause = function () {
-            div.paused = true;
+        node.pause = function () {
             clearTimeout(playingTimer);
             asyncNativeEvent('pause').call(this);
         };
 
-        return div;
+        node.addEventListener('play', function () {
+            node.paused = false;
+        }, false);
+
+        node.addEventListener('pause', function () {
+            node.paused = true;
+        }, false);
+
+        return node;
     };
 
 }(this));

@@ -46,7 +46,7 @@
                 node.addEventListener('ended', function () { ended = true; }, false);
                 node.play();
             });
-            waits(3000);
+            waits(2000);
             runs(function () {
                 expect(ended).toBe(true);
             });
