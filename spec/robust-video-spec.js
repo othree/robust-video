@@ -14,7 +14,7 @@
 
     });
 
-    describe("Play and Pause", function () {
+    describe("Play, Pause and Ended", function () {
         var node = new ChaosVideo({loading: true, twiceplay: true});
         var playcount = 0,
             pausecount = 0;
@@ -32,15 +32,29 @@
         node.play();  //play  3
         node.pause(); //pause 3
         waits(200);
-        it("Robust $Play", function () {
+        it("Robust $play", function () {
             runs(function () {
                 expect(playcount).toBe(3);
             });
         });
 
-        it("Robust $Pause", function () {
+        it("Robust $pause", function () {
             runs(function () {
                 expect(pausecount).toBe(3);
+            });
+        });
+
+        it("Robust $ended", function () {
+            runs(function () {
+                var count = 0;
+                node.addEventListener('$ended', function () {
+                    count++;
+                }, false);
+                node.play();
+                waits(2000);
+                runs(function () {
+                    expect(count).toBe(1);
+                });
             });
         });
     });
@@ -68,6 +82,17 @@
         it("Manuel Loop and no $ended event", function () {
             runs(function () {
                 expect(endedcount).toBe(0);
+                node.pause();
+            });
+        });
+        runs(function () {
+            node.loop = false;
+            node.play();
+        });
+        waits(2000);
+        it("Toggle loop to false works", function () {
+            runs(function () {
+                expect(endedcount).toBe(1);
                 node.pause();
             });
         });

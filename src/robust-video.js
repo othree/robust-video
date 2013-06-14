@@ -48,6 +48,14 @@
             node[method] = robust[method];
         }
 
+        node.addEventListener('ended', function () {
+            if (!node.loop) {
+                node.dispatchEvent(eventFactory('$ended'));
+            } else {
+                native.play.call(node);
+            }
+        }, false);
+
         node.setAttribute('data-robust', 'yes');
         return node;
     };
