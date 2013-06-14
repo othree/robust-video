@@ -16,8 +16,8 @@
             var played = false;
             runs(function () {
                 var node = new ChaosVideo();
-                node.play();
                 node.addEventListener('play', function () { played = true; }, false);
+                node.play();
             });
             waits(100);
             runs(function () {
@@ -29,12 +29,61 @@
             var paused = false;
             runs(function () {
                 var node = new ChaosVideo();
-                node.pause();
                 node.addEventListener('pause', function () { paused = true; }, false);
+                node.play();
+                node.pause();
             });
             waits(100);
             runs(function () {
                 expect(paused).toBe(true);
+            });
+        });
+
+        it("Ended event should trigger", function () {
+            var ended = false;
+            runs(function () {
+                var node = new ChaosVideo();
+                node.addEventListener('ended', function () { ended = true; }, false);
+                node.play();
+            });
+            waits(3000);
+            runs(function () {
+                expect(ended).toBe(true);
+            });
+        });
+
+    });
+
+    describe("Play and Pause", function () {
+        it("Robust $Play", function () {
+            var playing = 0;
+            runs(function () {
+                var node = new ChaosVideo({twiceplay: true});
+                robustVideo(node);
+                node.addEventListener('$play', function () { playing++; }, false);
+                node.play();
+                node.play();
+                node.play();
+            });
+            waits(100);
+            runs(function () {
+                expect(playing).toBe(1);
+            });
+        });
+
+        it("Robust $Pause", function () {
+            var paused = 0;
+            runs(function () {
+                var node = new ChaosVideo({twiceplay: true});
+                robustVideo(node);
+                node.addEventListener('$pause', function () { paused++; }, false);
+                node.play();
+                node.pause();
+                node.pause();
+            });
+            waits(100);
+            runs(function () {
+                expect(paused).toBe(1);
             });
         });
     });
