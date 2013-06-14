@@ -32,13 +32,11 @@
                 if (!states.paused) { return; }
                 native.play.call(node);
                 states.paused = false;
-                node.dispatchEvent(eventFactory('$play'));
             },
             pause: function () {
                 if (states.paused) { return; }
                 native.pause.call(node);
                 states.paused = true;
-                node.dispatchEvent(eventFactory('$pause'));
             }
         };
 
@@ -48,12 +46,25 @@
             node[method] = robust[method];
         }
 
-        node.addEventListener('play', function () {
-            node.paused = false;
+        node.addEventListener('play', function (event) {
+            if (!states.paused) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+                // node.pause();
+                return false;
+            }
+            states.paused = false;
+            node.dispatchEvent(eventFactory('$play'));
         }, false);
 
         node.addEventListener('pause', function () {
-            node.paused = true;
+            if (states.paused) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+                return false;
+            }
+            states.paused = true;
+            node.dispatchEvent(eventFactory('$pause'));
         }, false);
 
         node.addEventListener('ended', function () {

@@ -59,6 +59,36 @@
         });
     });
 
+    describe("Controller Play, Pause", function () {
+        var node = new ChaosVideo({loading: true, twiceplay: true});
+        var playcount = 0,
+            pausecount = 0;
+        robustVideo(node);
+        node.addEventListener('$play', function () { playcount++; }, false);
+        node.addEventListener('$pause', function () { pausecount++; }, false);
+        node.controllerplay();  //play  1
+        node.controllerplay();
+        node.controllerpause(); //pause 1
+        node.controllerpause();
+        node.controllerplay();  //play  2
+        node.controllerpause(); //pause 2
+        node.controllerpause();
+        node.controllerplay();  //play  3
+        node.controllerpause(); //pause 3
+        waits(200);
+        it("Robust $play from controller", function () {
+            runs(function () {
+                expect(playcount).toBe(3);
+            });
+        });
+
+        it("Robust $pause from controller", function () {
+            runs(function () {
+                expect(pausecount).toBe(3);
+            });
+        });
+    });
+
     describe("Loop", function () {
         var node = new ChaosVideo({noloop: true});
         var pausecount = 0,
