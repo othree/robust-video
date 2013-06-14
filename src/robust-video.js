@@ -48,6 +48,14 @@
             node[method] = robust[method];
         }
 
+        node.addEventListener('play', function () {
+            node.paused = false;
+        }, false);
+
+        node.addEventListener('pause', function () {
+            node.paused = true;
+        }, false);
+
         node.addEventListener('ended', function () {
             if (!node.loop) {
                 node.dispatchEvent(eventFactory('$ended'));

@@ -59,6 +59,7 @@
         };
 
         node.play = function () {
+            node.paused = false;
             asyncNativeEvent('play').call(this);
             if ((options.loading && options.immeplaying) || !options.loading) {
                 asyncNativeEvent('playing').call(this);
@@ -67,8 +68,11 @@
             if (options.loading) {
                 var that = this;
                 setTimeout(function () {
+                    if (options.unstoppable) {
+                        node.paused = false;
+                    }
                     if (options.unstoppable || !node.paused) {
-                        if (options.loading && !options.immeplaying) {
+                        if (!options.immeplaying) {
                             asyncNativeEvent('playing').call(that);
                         }
                         if (options.twiceplay || options.unstoppable) {
@@ -82,17 +86,10 @@
             }
         };
         node.pause = function () {
+            node.paused = true;
             clearTimeout(playingTimer);
             asyncNativeEvent('pause').call(this);
         };
-
-        node.addEventListener('play', function () {
-            node.paused = false;
-        }, false);
-
-        node.addEventListener('pause', function () {
-            node.paused = true;
-        }, false);
 
         return node;
     };
