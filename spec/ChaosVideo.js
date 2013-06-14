@@ -88,8 +88,12 @@
         node.pause = function () {
             node.paused = true;
             clearTimeout(playingTimer);
+            playingTimer = 0;
             asyncNativeEvent('pause').call(this);
         };
+
+        node.controllerplay = node.play;
+        node.controllerpause = node.pause;
 
         return node;
     };

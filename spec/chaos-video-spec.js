@@ -109,6 +109,31 @@
                 node.pause();
             });
         });
+
+        it("Controller", function () {
+            var playcount = 0,
+                pausecount = 0,
+                endedcount = 0;
+            var node = new ChaosVideo({});
+            runs(function () {
+                node.addEventListener('play', function () { playcount++; }, false);
+                node.addEventListener('pause', function () { pausecount++; }, false);
+                node.addEventListener('ended', function () { endedcount++; }, false);
+                node.controllerplay();
+                node.controllerpause();
+            });
+            // All event were triggered by timeout, so require a little delay.
+            waits(10);
+            runs(function () {
+                expect(playcount === 1).toBe(true);
+                expect(pausecount === 1).toBe(true);
+                node.controllerplay();
+            });
+            waits(2000);
+            runs(function () {
+                expect(endedcount === 1).toBe(true);
+            });
+        });
     });
 
 }());
