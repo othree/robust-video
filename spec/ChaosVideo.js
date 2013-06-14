@@ -49,7 +49,7 @@
                     node.currentTime = 0;
                 }
                 asyncNativeEvent('timeupdate', function () {
-                    this.currentTime += 0.3;
+                    this.currentTime += 0.2;
                 }).call(node);
                 playingTimer = setTimeout(playing, 50);
             }
@@ -71,7 +71,9 @@
                         if (options.loading && !options.immeplaying) {
                             asyncNativeEvent('playing').call(that);
                         }
-                        asyncNativeEvent('play').call(that);
+                        if (options.twiceplay || options.unstoppable) {
+                            asyncNativeEvent('play').call(that);
+                        }
                         startPlay();
                     }
                 }, 100);

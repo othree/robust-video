@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*jslint browser: true, vars: true*/
 /*global describe: false, it: false, expect: false, runs: false, waits: false, waitsFor: false*/
 /*global RobustVideo: false, robustVideo: false*/
 /*global ChaosVideo: false*/
@@ -12,78 +12,63 @@
             expect(node.getAttribute('data-robust')).toBe('yes');
         });
 
-        it("Play event should trigger", function () {
-            var played = false;
-            runs(function () {
-                var node = new ChaosVideo();
-                node.addEventListener('play', function () { played = true; }, false);
-                node.play();
-            });
-            waits(100);
-            runs(function () {
-                expect(played).toBe(true);
-            });
-        });
-
-        it("Pause event should trigger", function () {
-            var paused = false;
-            runs(function () {
-                var node = new ChaosVideo();
-                node.addEventListener('pause', function () { paused = true; }, false);
-                node.play();
-                node.pause();
-            });
-            waits(100);
-            runs(function () {
-                expect(paused).toBe(true);
-            });
-        });
-
-        it("Ended event should trigger", function () {
-            var ended = false;
-            runs(function () {
-                var node = new ChaosVideo();
-                node.addEventListener('ended', function () { ended = true; }, false);
-                node.play();
-            });
-            waits(2000);
-            runs(function () {
-                expect(ended).toBe(true);
-            });
-        });
-
     });
 
     describe("Play and Pause", function () {
+        var node = new ChaosVideo({loading: true, twiceplay: true});
+        var playcount = 0,
+            pausecount = 0;
+        robustVideo(node);
+        node.addEventListener('$play', function () { playcount++; }, false);
+        node.addEventListener('$pause', function () { pausecount++; }, false);
+        node.play();  //play  1
+        node.play();
+        node.play();
+        node.pause(); //pause 1
+        node.pause();
+        node.play();  //play  2
+        node.pause(); //pause 2
+        node.pause();
+        node.play();  //play  3
+        node.pause(); //pause 3
+        waits(200);
         it("Robust $Play", function () {
-            var playing = 0;
             runs(function () {
-                var node = new ChaosVideo({twiceplay: true});
-                robustVideo(node);
-                node.addEventListener('$play', function () { playing++; }, false);
-                node.play();
-                node.play();
-                node.play();
-            });
-            waits(100);
-            runs(function () {
-                expect(playing).toBe(1);
+                expect(playcount).toBe(3);
             });
         });
 
         it("Robust $Pause", function () {
-            var paused = 0;
             runs(function () {
-                var node = new ChaosVideo({twiceplay: true});
-                robustVideo(node);
-                node.addEventListener('$pause', function () { paused++; }, false);
-                node.play();
-                node.pause();
-                node.pause();
+                expect(pausecount).toBe(3);
             });
-            waits(100);
+        });
+    });
+
+    describe("Loop", function () {
+        var node = new ChaosVideo({noloop: true});
+        var pausecount = 0,
+            endedcount = 0;
+        robustVideo(node);
+        node.addEventListener('$pause', function () { pausecount++; }, false);
+        node.addEventListener('$ended', function () { endedcount++; }, false);
+        node.loop = true;
+        node.play();
+        waits(2000);
+        it("Manuel Loop", function () {
             runs(function () {
-                expect(paused).toBe(1);
+                expect(node.paused).toBe(false);
+            });
+        });
+        it("Manuel Loop and no $pause event", function () {
+            runs(function () {
+                expect(pausecount).toBe(0);
+            });
+        });
+        it("Manuel Loop and no $ended event", function () {
+            runs(function () {
+                expect(endedcount).toBe(0);
+                node.pause();
             });
         });
     });
