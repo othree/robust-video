@@ -11,12 +11,10 @@
     var asyncNativeEvent = function (type, handler) {
         return function () {
             var node = this;
-            setTimeout(function () {
-                if (typeof handler === 'function') {
-                    handler.call(node);
-                }
-                node.dispatchEvent(nativeEvent(type));
-            }, 1);
+            if (typeof handler === 'function') {
+                handler.call(node);
+            }
+            node.dispatchEvent(nativeEvent(type));
         };
     };
     var availableOptions = ['twiceplay', 'noloop', 'unstoppable', 'loading', 'immeplaying'];
@@ -31,7 +29,7 @@
             options[key] = options[key] !== undefined ? options[key] : false;
         }
 
-        var node = document.createElement('node');
+        var node = document.createElement('div');
         node.paused = true;
         node.currentTime = 0;
         node.loop = false;
@@ -54,9 +52,6 @@
                 playingTimer = setTimeout(playing, 50);
             }
         };
-        var startPlay = function () {
-            playingTimer = setTimeout(playing, 5);
-        };
 
         node.play = function () {
             node.paused = false;
@@ -72,17 +67,17 @@
                         node.paused = false;
                     }
                     if (options.unstoppable || !node.paused) {
-                        if (!options.immeplaying) {
-                            asyncNativeEvent('playing').call(that);
-                        }
+                        playing();
                         if (options.twiceplay || options.unstoppable) {
                             asyncNativeEvent('play').call(that);
                         }
-                        startPlay();
+                        if (!options.immeplaying) {
+                            asyncNativeEvent('playing').call(that);
+                        }
                     }
                 }, 100);
             } else {
-                startPlay();
+                playing();
             }
         };
         node.pause = function () {

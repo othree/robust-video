@@ -15,6 +15,8 @@
         return event;
     };
 
+    var index = 0;
+
     root.RobustVideo = function (node) {
         if (node.getAttribute('data-robust') === 'yes') {
             return node;
@@ -28,18 +30,21 @@
             pause: node.pause
         };
         var robust = {
+            paused: true,
+            postpaused: false,
             play: function () {
-                if (!states.paused) { return; }
+                if (!robust.paused) { return; }
+                robust.paused = false;
+                robust.postpaused = false;
                 native.play.call(node);
-                states.paused = false;
             },
             pause: function () {
-                if (states.paused) { return; }
+                if (robust.paused) { return; }
+                robust.paused = true;
+                robust.postpaused = true;
                 native.pause.call(node);
-                states.paused = true;
-            }
+            },
         };
-
 
         var method = '';
         for (method in native) {
@@ -47,11 +52,11 @@
         }
 
         node.addEventListener('play', function (event) {
+            if (robust.postpaused) {
+                native.pause.call(node);
+            }
             if (!states.paused) {
-                event.stopImmediatePropagation();
-                event.preventDefault();
-                // node.pause();
-                return false;
+                return;
             }
             states.paused = false;
             node.dispatchEvent(eventFactory('$play'));
@@ -59,9 +64,7 @@
 
         node.addEventListener('pause', function () {
             if (states.paused) {
-                event.stopImmediatePropagation();
-                event.preventDefault();
-                return false;
+                return;
             }
             states.paused = true;
             node.dispatchEvent(eventFactory('$pause'));
@@ -75,6 +78,7 @@
             }
         }, false);
 
+        node.index = ++index;
         node.setAttribute('data-robust', 'yes');
         return node;
     };

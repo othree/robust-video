@@ -45,16 +45,15 @@
         });
 
         it("Robust $ended", function () {
+            var count = 0;
             runs(function () {
-                var count = 0;
-                node.addEventListener('$ended', function () {
-                    count++;
-                }, false);
+                node.addEventListener('$ended', function () { count++; }, false);
+                node.currentTime = 0;
                 node.play();
-                waits(2000);
-                runs(function () {
-                    expect(count).toBe(1);
-                });
+            });
+            waits(2000);
+            runs(function () {
+                expect(count).toBe(1);
             });
         });
     });
@@ -67,6 +66,7 @@
         node.addEventListener('$play', function () { playcount++; }, false);
         node.addEventListener('$pause', function () { pausecount++; }, false);
         node.controllerplay();  //play  1
+        node.controllerplay();
         node.controllerplay();
         node.controllerpause(); //pause 1
         node.controllerpause();
@@ -85,6 +85,32 @@
         it("Robust $pause from controller", function () {
             runs(function () {
                 expect(pausecount).toBe(3);
+            });
+        });
+    });
+
+    describe("Unstoppable Video", function () {
+        var node = new ChaosVideo({loading: true, unstoppable: true});
+        var pausecount = 0;
+        robustVideo(node);
+        node.addEventListener('$pause', function () { pausecount++; }, false);
+        runs(function () {
+            node.play();
+        });
+        waits(10);
+        runs(function () {
+            node.pause();
+        });
+        waits(200);
+        it("Hold unstoppable video", function () {
+            runs(function () {
+                expect(node.paused).toBe(true);
+            });
+        });
+
+        it("No too many $pause event", function () {
+            runs(function () {
+                expect(pausecount).toBe(1);
             });
         });
     });
