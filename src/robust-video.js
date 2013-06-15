@@ -58,8 +58,8 @@
         node.addEventListener('touchend', toggleControlling, false);
 
         node.addEventListener('play', function (event) {
+            if (!states.paused) { return; }
             if (controlling) {
-                if (!states.paused) { return; }
                 node.dispatchEvent(eventFactory('$play'));
                 states.paused = false;
             } else if (states.paused) {
@@ -68,8 +68,8 @@
         }, false);
 
         node.addEventListener('pause', function () {
+            if (states.paused) { return; }
             if (controlling) {
-                if (states.paused) { return; }
                 node.dispatchEvent(eventFactory('$ause'));
                 states.paused = true;
             }

@@ -15,7 +15,8 @@
             });
             waits(100);
             runs(function () {
-                expect(played && !node.paused).toBe(true);
+                expect(played).toBe(true);
+                expect(node.paused).toBe(false);
                 node.pause();
             });
         });
@@ -29,7 +30,7 @@
             });
             waits(200);
             runs(function () {
-                expect(played === 2).toBe(true);
+                expect(played).toBe(2);
                 node.pause();
             });
         });
@@ -44,7 +45,8 @@
             });
             waits(2000);
             runs(function () {
-                expect(ended === 0 && !node.paused).toBe(true);
+                expect(ended).toBe(0);
+                expect(node.paused).toBe(false);
                 node.pause();
             });
         });
@@ -58,7 +60,8 @@
             });
             waits(2000);
             runs(function () {
-                expect(ended === 1 && node.paused).toBe(true);
+                expect(ended).toBe(1);
+                expect(node.paused).toBe(true);
                 node.pause();
             });
         });
@@ -83,11 +86,11 @@
             runs(function () {
                 node.addEventListener('playing', function () { count++; }, false);
                 node.play();
-                expect(count === 0).toBe(true);
+                expect(count).toBe(0);
             });
             waits(200);
             runs(function () {
-                expect(count === 1).toBe(true);
+                expect(count).toBe(1);
                 node.pause();
             });
         });
@@ -102,7 +105,7 @@
             // All event were triggered by timeout, so require a little delay.
             waits(10);
             runs(function () {
-                expect(count === 1).toBe(true);
+                expect(count).toBe(1);
             });
             waits(200);
             runs(function () {
@@ -125,13 +128,13 @@
             // All event were triggered by timeout, so require a little delay.
             waits(10);
             runs(function () {
-                expect(playcount === 1).toBe(true);
-                expect(pausecount === 1).toBe(true);
+                expect(playcount).toBe(1);
+                expect(pausecount).toBe(1);
                 node.controllerplay();
             });
             waits(2000);
             runs(function () {
-                expect(endedcount === 1).toBe(true);
+                expect(endedcount).toBe(1);
             });
         });
     });
