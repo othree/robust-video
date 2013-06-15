@@ -154,4 +154,62 @@
         });
     });
 
+    describe("Playing", function () {
+        var node = new ChaosVideo({loading: true});
+        var count = 0;
+        robustVideo(node);
+        node.addEventListener('$playing', function () { count++; }, false);
+        it("No Immediate Playing", function () {
+            runs(function () {
+                node.play();
+                expect(count).toBe(0);
+            });
+        });
+        waits(200);
+        it("Trigger $playing", function () {
+            runs(function () {
+                expect(count).toBe(1);
+                node.pause();
+            });
+        });
+        it("No Immediate Playing at 2nd time", function () {
+            runs(function () {
+                node.play();
+                expect(count).toBe(1);
+            });
+        });
+        waits(200);
+        it("Trigger $playing at 2nd time", function () {
+            runs(function () {
+                expect(count).toBe(2);
+                node.pause();
+            });
+        });
+    });
+
+    describe("Playing with no loading video", function () {
+        var node = new ChaosVideo({});
+        var count = 0;
+        robustVideo(node);
+        node.addEventListener('$playing', function () { count++; }, false);
+        runs(function () {
+            node.play();
+        });
+        waits(10);
+        it("Trigger $playing", function () {
+            runs(function () {
+                expect(count).toBe(1);
+                node.pause();
+                node.play();
+            });
+        });
+        waits(10);
+        it("Trigger $playing at 2nd time", function () {
+            runs(function () {
+                expect(count).toBe(2);
+                node.pause();
+            });
+        });
+    });
+
 }(this));

@@ -23,7 +23,8 @@
         }
         var states = {
             paused: true,
-            pausedTime: 0
+            playing: false,
+            startTime: 0
         };
         var native = {
             play: node.play,
@@ -58,20 +59,23 @@
         node.addEventListener('touchend', toggleControlling, false);
 
         node.addEventListener('play', function (event) {
+            states.startTime = node.currentTime;
             if (!states.paused) { return; }
             if (controlling) {
                 node.dispatchEvent(eventFactory('$play'));
                 states.paused = false;
+                states.startTime = node.currentTime;
             } else if (states.paused) {
                 native.pause.call(node);
             }
         }, false);
 
         node.addEventListener('pause', function () {
+            states.playing = false;
             if (states.paused) { return; }
             if (controlling) {
-                node.dispatchEvent(eventFactory('$ause'));
                 states.paused = true;
+                node.dispatchEvent(eventFactory('$pause'));
             }
         }, false);
 
@@ -80,6 +84,15 @@
                 node.dispatchEvent(eventFactory('$ended'));
             } else {
                 native.play.call(node);
+            }
+        }, false);
+
+        node.addEventListener('timeupdate', function () {
+            if (states.paused) { return; }
+            if (states.playing) { return; }
+            if (node.currentTime > states.startTime) {
+                states.playing = true;
+                node.dispatchEvent(eventFactory('$playing'));
             }
         }, false);
 
