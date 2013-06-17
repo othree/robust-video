@@ -54,9 +54,15 @@ Options
     video = document.getElementById('#my_video');
     robustVideo(video, {native: true});
 
-With native option on, RobustVideo will try robust native events using event.stopImmediatePropagation to prevent native 
-event listener keep trigger functions when don't necessary.
+With native option on, RobustVideo will try robust native events:
 
+* play
+* pause
+* playing
+* ended
+* durationchange
+
+By using event.stopImmediatePropagation to prevent native event listener keep trigger functions when don't necessary.
 You should robust video before assign any event handler if use native option.
 
 
