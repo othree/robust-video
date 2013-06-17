@@ -7,12 +7,49 @@ This library is trying to make all platform supports video have very common beha
 Issues Try to Solve
 -------------------
 
-* Loop not support
-* 'play' event will trigger twice when buffer ready.
-* Won't stop play when buffer ready even if pause() were called.
-* 'play', 'pause' event is able to trigger twice on some browsers.
-* 'playing' event not always trigger when video start plays.
-* Video duration is incorrect at first.
+* √ Loop not support on some platform
+* √ 'play' event will trigger twice when buffer ready.
+* √ Won't stop play when buffer ready even if pause() were called.
+* √ 'play', 'pause' event is able to trigger twice on some browsers.
+* √ 'playing' event not always trigger when video start plays.
+* √ Video duration is incorrect at first.
+* iPhone, iPod close player while video is loading will not able to play video again.
+
+How to Use
+----------
+
+Throw your video DOM node to robustVideo function:
+
+    video = document.getElementById('#my_video');
+    robustVideo(video);
+
+    // or
+
+    new RobustVideo(video);
+
+    // If you want loop play on all platform.
+    video.loop = true;
+
+These function will return the same dom node. Then you can listen to robust custom events:
+
+* $play
+* $pause
+* $playing
+* $ended
+* $durationchange
+
+All have the same definition as the [standard][1], but more robust.
+
+And if you assign loop attribute to true, on some platform don't support loop play.
+RobustVideo will auto loop play. RobustVideo didn't change the default behavior so you must assign it by your self.
+RobustVideo will not do it automatically.
+
+[1]:http://www.w3.org/TR/html5/embedded-content-0.html#mediaevents
+
+TODO
+----
+
+* Add an option to replace native events, then user can use event without '$' prefix.
 
 License
 -------
