@@ -211,5 +211,57 @@
             });
         });
     });
+    describe("Robust $durationchange case 1", function () {
+        var node = new ChaosVideo({loading: true, duration1: true});
+        var count = 0;
+        var is1 = 0;
+        robustVideo(node);
+        node.addEventListener('$durationchange', function () {
+            count++;
+            if (node.duration === 1) {
+                is1 = 1;
+            }
+        }, false);
+        runs(function () {
+            node.play();
+        });
+        waits(100);
+        it("Trigger $durationchange one time", function () {
+            runs(function () {
+                expect(count).toBe(1);
+            });
+        });
+        it("duration never be 1", function () {
+            runs(function () {
+                expect(is1).toBe(0);
+            });
+        });
+    });
+    describe("Robust $durationchange case infinity", function () {
+        var node = new ChaosVideo({loading: 1, durationinfinity: true});
+        var count = 0;
+        var isInfinity = 0;
+        robustVideo(node);
+        node.addEventListener('$durationchange', function () {
+            count++;
+            if (!isFinite(node.duration)) {
+                isInfinity = 1;
+            }
+        }, false);
+        runs(function () {
+            node.play();
+        });
+        waits(100);
+        it("Trigger $durationchange one time", function () {
+            runs(function () {
+                expect(count).toBe(1);
+            });
+        });
+        it("duration never be Infinity", function () {
+            runs(function () {
+                expect(isInfinity).toBe(0);
+            });
+        });
+    });
 
 }(this));

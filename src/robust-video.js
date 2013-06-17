@@ -96,6 +96,12 @@
             }
         }, false);
 
+        node.addEventListener('durationchange', function () {
+            if (node.duration === 1) { return; }
+            if (!isFinite(node.duration)) { return; }
+            node.dispatchEvent(eventFactory('$durationchange'));
+        }, false);
+
         node.index = ++index;
         node.setAttribute('data-robust', 'yes');
         return node;
