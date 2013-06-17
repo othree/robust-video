@@ -65,15 +65,12 @@
             //Some old browser will trigger play event while canplay
             if (options.loading) {
                 var that = this;
-                console.log(options.duration1);
                 if (options.duration1) {
-                    console.log(node.duration);
                     setTimeout(function () {
                         node.duration = 1;
                         asyncNativeEvent('durationchange').call(that);
                     }, 20);
                 } else if (options.durationinfinity) {
-                    console.log(node.duration);
                     setTimeout(function () {
                         node.duration = Infinity;
                         asyncNativeEvent('durationchange').call(that);
