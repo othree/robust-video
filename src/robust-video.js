@@ -12,7 +12,6 @@
             event = document.createEvent('Event');
             event.initEvent(type, true, true);
         }
-        event.robust = true;
         return event;
     };
 
@@ -57,7 +56,8 @@
         }
 
         var controlling = false,
-            nonative = false;
+            nonative = false,
+            playingnative = false;
         var toggleControlling = function () {
             controlling = true;
             setTimeout(function () { controlling = false; }, 1);
@@ -67,7 +67,7 @@
 
         node.addEventListener('play', function (event) {
             states.startTime = node.currentTime;
-            if (options.native && !event.robust && states.paused) {
+            if (options.native && states.paused) {
                 event.stopImmediatePropagation();
             }
             if (!states.paused) { return; }
@@ -85,7 +85,7 @@
 
         node.addEventListener('pause', function (event) {
             states.playing = false;
-            if ((options.native && !event.robust && !states.paused) || nonative) {
+            if ((options.native && !states.paused) || nonative) {
                 event.stopImmediatePropagation();
             }
             if (states.paused) { return; }
@@ -112,7 +112,7 @@
 
         if (options.native) {
             node.addEventListener('playing', function (event) {
-                if (!event.robust) {
+                if (!playingnative) {
                     event.stopImmediatePropagation();
                 }
             }, false);
@@ -123,7 +123,9 @@
             if (states.playing) { return; }
             if (node.currentTime > states.startTime) {
                 states.playing = true;
+                playingnative = true;
                 node.dispatchEvent(eventFactory(eventPrefix + 'playing'));
+                playingnative = false;
             }
         }, false);
 
