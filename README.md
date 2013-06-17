@@ -46,10 +46,19 @@ RobustVideo will not do it automatically.
 
 [1]:http://www.w3.org/TR/html5/embedded-content-0.html#mediaevents
 
-TODO
-----
+Options
+-------
 
-* Add an option to replace native events, then user can use event without '$' prefix.
+### native
+
+    video = document.getElementById('#my_video');
+    robustVideo(video, {native: true});
+
+With native option on, RobustVideo will try robust native events using event.stopImmediatePropagation to prevent native 
+event listener keep trigger functions when don't necessary.
+
+You should robust video before assign any event handler if use native option.
+
 
 License
 -------
