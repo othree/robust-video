@@ -137,6 +137,50 @@
                 expect(endedcount).toBe(1);
             });
         });
+        it("Duration will be 1 for a while", function () {
+            var is1 = false;
+            var isNot1 = false;
+            var node = new ChaosVideo({loading: true, duration1: true});
+            runs(function () {
+                node.addEventListener('durationchange', function () {
+                    if (node.duration !== 1) {
+                        isNot1 = true;
+                    }
+                    if (node.duration === 1 && !isNot1) {
+                        is1 = true;
+                    }
+                }, false);
+                node.play();
+            });
+            // All event were triggered by timeout, so require a little delay.
+            waits(50);
+            runs(function () {
+                expect(isNot1).toBe(true);
+                expect(is1).toBe(true);
+            });
+        });
+        it("Duration will be infinity for a while", function () {
+            var isInfinity = false;
+            var isNot1 = false;
+            var node = new ChaosVideo({loading: true, durationinfinity: true});
+            runs(function () {
+                node.addEventListener('durationchange', function () {
+                    if (node.duration !== 1 && isFinite(node.duration)) {
+                        isNot1 = true;
+                    }
+                    if (!isFinite(node.duration) && !isNot1) {
+                        isInfinity = true;
+                    }
+                }, false);
+                node.play();
+            });
+            // All event were triggered by timeout, so require a little delay.
+            waits(50);
+            runs(function () {
+                expect(isNot1).toBe(true);
+                expect(isInfinity).toBe(true);
+            });
+        });
     });
 
 }());

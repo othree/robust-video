@@ -17,11 +17,10 @@
             node.dispatchEvent(nativeEvent(type));
         };
     };
-    var availableOptions = ['twiceplay', 'noloop', 'unstoppable', 'loading', 'immeplaying'];
+    var availableOptions = ['twiceplay', 'noloop', 'unstoppable', 'loading', 'immeplaying', 'duration1', 'durationinfinity'];
 
     root.ChaosVideo = function (options) {
         options = typeof options === 'object' ? options : {};
-
         var option = '',
             key = '';
         for (option in availableOptions) {
@@ -32,6 +31,10 @@
         var node = document.createElement('div');
         node.paused = true;
         node.currentTime = 0;
+        node.duration = NaN;
+        if (options.duration1) {
+            node.duration = 0;
+        }
         node.loop = false;
         if (options.noloop) {
             node.loop = undefined;
@@ -62,6 +65,24 @@
             //Some old browser will trigger play event while canplay
             if (options.loading) {
                 var that = this;
+                console.log(options.duration1);
+                if (options.duration1) {
+                    console.log(node.duration);
+                    setTimeout(function () {
+                        node.duration = 1;
+                        asyncNativeEvent('durationchange').call(that);
+                    }, 20);
+                } else if (options.durationinfinity) {
+                    console.log(node.duration);
+                    setTimeout(function () {
+                        node.duration = Infinity;
+                        asyncNativeEvent('durationchange').call(that);
+                    }, 20);
+                }
+                setTimeout(function () {
+                    node.duration = 5.0123;
+                    asyncNativeEvent('durationchange').call(that);
+                }, 40);
                 setTimeout(function () {
                     if (options.unstoppable) {
                         node.paused = false;
@@ -77,6 +98,7 @@
                     }
                 }, 100);
             } else {
+                node.duration = 5.0123;
                 playing();
             }
         };
