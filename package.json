@@ -2,6 +2,11 @@
     "name": "robst-video",
     "author": "Kao, Wei-Ko",
 
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/othree/robust-video.git"
+    },
+
     "scripts": {
         "test": "aladdin"
     }
