@@ -66,6 +66,11 @@ By using event.stopImmediatePropagation to prevent native event listener keep tr
 You should robust video before assign any event handler if use native option.
 
 
+Status
+------
+
+[![Build Status](https://travis-ci.org/othree/robust-video.png?branch=master)](https://travis-ci.org/othree/robust-video)
+
 License
 -------
 
