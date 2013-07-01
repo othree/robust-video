@@ -3,6 +3,6 @@
     "author": "Kao, Wei-Ko",
 
     "scripts": {
-        "test": "phantom-jasmine -c spec_config.json"
+        "test": "aladdin"
     }
 }
