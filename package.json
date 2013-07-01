@@ -1,0 +1,8 @@
+{
+    "name": "robst-video",
+    "author": "Kao, Wei-Ko",
+
+    "scripts": {
+        "test": "phantom-jasmine -c spec_config.json"
+    }
+}
