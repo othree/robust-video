@@ -1,5 +1,6 @@
 {
     "name": "robst-video",
+    "version": "0.1.0",
     "author": "Kao, Wei-Ko",
 
     "repository": {
@@ -8,6 +9,12 @@
     },
 
     "scripts": {
-        "test": "aladdin"
+        "test": "grunt test"
+    },
+
+    "devDependencies": {
+        "grunt": "~0.4.0",
+        "grunt-jslint": "~0.2.0",
+        "grunt-contrib-jasmine": "~0.4.0"
     }
 }

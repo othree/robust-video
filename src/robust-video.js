@@ -1,4 +1,4 @@
-/*jslint browser: true, vars: true*/
+/*jslint browser: true, vars: true, forin: true*/
 /*global CustomEvent: false*/
 
 (function (root) {
@@ -47,7 +47,7 @@
                 if (eventPrefix) {
                     node.dispatchEvent(eventFactory(eventPrefix + 'pause'));
                 }
-            },
+            }
         };
 
         var method = '';
