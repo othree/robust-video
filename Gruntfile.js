@@ -5,7 +5,9 @@ module.exports = function (grunt) {
     grunt.initConfig({
         jslint: {
             files: [
-                'src/**/*.js'
+                'src/**/*.js',
+                'helper/**/*.js',
+                'spec/**/*.js'
             ]
         },
         jasmine : {

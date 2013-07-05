@@ -1,4 +1,4 @@
-/*jslint browser: true, vars: true*/
+/*jslint browser: true, vars: true, forin: true*/
 (function (root) {
     "use strict";
 

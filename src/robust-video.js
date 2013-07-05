@@ -1,4 +1,4 @@
-/*jslint browser: true, vars: true, forin: true*/
+/*jslint browser: true, vars: true, forin: true, plusplus: true*/
 /*global CustomEvent: false*/
 
 (function (root) {

@@ -1,8 +1,8 @@
-/*jslint browser: true, vars: true*/
+/*jslint browser: true, vars: true, plusplus: true*/
 /*global describe: false, it: false, expect: false, runs: false, waits: false, waitsFor: false*/
 /*global RobustVideo: false, robustVideo: false*/
 /*global ChaosVideo: false*/
-(function (root) {
+(function () {
     "use strict";
 
     describe("Chaos Video", function () {
@@ -67,7 +67,6 @@
         });
 
         it("Unstoppable Video", function () {
-            var ended = 0;
             var node = new ChaosVideo({loading: true, unstoppable: true});
             runs(function () {
                 node.play();
