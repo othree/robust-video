@@ -114,3 +114,8 @@ Create a new video to replace the old one.
 This fix not in RobustVideo.
 
 
+Reference
+---------
+
+* [HTML5 Video Events and API](http://www.w3.org/2010/05/video/mediaevents.html)
+* [The State Of HTML5 Video](http://www.longtailvideo.com/html5/)
