@@ -10,8 +10,11 @@ Loop not support on some platform
 Most mobile browser don't support loop attribute.
 But you can call `play()` on `ended` event.
 
-
-    video end --> video pause --> paused event --> ended event
+    ended > paused         
+    |       |             
+    +-------+-------+--------------------->
+            |       |
+            paused  ended
 
 
 `play`, `pause` event is possible to trigger twice on some browsers
@@ -28,23 +31,23 @@ Use custom `$play`, `$pause` event instead or stopImmediatePropagation().
 
 SPEC:
 
+    play()
+    |
     loadstart           canplay,playstart
     |                   |
     +-------------------+----------------->
     |                   |
     play                playing 
-    |    
-    play()
 
 REAL WORLD:
 
+    play()
+    |
     loadstart           canplay,playstart
     |                   |
     +-------------------+----------------->
     |                   |
     play                play
-    |    
-    play() 
 
 
 Use custom `$play` event instead or stopImmediatePropagation().
@@ -55,23 +58,23 @@ Won't stop play when buffer ready even if pause() were called
 
 EXPECT
 
-    loadstart           canplay
-    |                   |
-    +--------+----------+----------------->
-    |        |          
-    play     pause           
-    |        |
-    play()   pause()
+    play()     pause()
+    |          | 
+    loadstart  |          canplay
+    |          |          |
+    +----------+----------+----------------->
+    |          |          
+    play       pause           
 
 REAL WORLD
 
-    loadstart           canplay,playstart
-    |                   |
-    +--------+----------+----------------->
-    |        |          |
-    play     pause      play     
-    |        |
-    play()   pause()
+    play()     pause()
+    |          |
+    loadstart  videopause  canplay,playstart
+    |          |           |
+    +----------+-----------+----------------->
+    |          |           |
+    play       pause       play     
 
 Memorize play state. If video is paused, call stop() when `play`
 
@@ -91,8 +94,6 @@ Should be NaN by default, but:
 * Android 2 Internet is 1
 * Chrome will become 100 in a very short time
 
-
-
 RobustVideo
 -----------
 
@@ -105,13 +106,13 @@ One More Issue
 
 iPhone, iPod iOS6: video won't be able to play if you close player before it start plays first time.
 
-    loadstart           canplay
-    |                   |
-    +--------+----------+----------------->
-    |        |          
-    play     |           
-    |        |
-    play()   Touch Close
+    play()     Touch Close
+    |          |
+    loadstart  |           canplay
+    |          |           |
+    +----------+-----------+----------------->
+    |       
+    play   
 
 Create a new video to replace the old one.
 This fix not in RobustVideo.
