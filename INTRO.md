@@ -111,8 +111,8 @@ iPhone, iPod iOS6: video won't be able to play if you close player before it sta
     loadstart  |           canplay
     |          |           |
     +----------+-----------+----------------->
-    |       
-    play   
+    |                      |
+    play                   playing
 
 Create a new video to replace the old one.
 This fix not in RobustVideo.
