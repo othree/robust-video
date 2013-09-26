@@ -11,6 +11,9 @@ Most mobile browser don't support loop attribute.
 But you can call `play()` on `ended` event.
 
 
+    video end --> video pause --> paused event --> ended event
+
+
 `play`, `pause` event is possible to trigger twice on some browsers
 ------------------------------------------------------------------
 
@@ -113,6 +116,9 @@ iPhone, iPod iOS6: video won't be able to play if you close player before it sta
 Create a new video to replace the old one.
 This fix not in RobustVideo.
 
+This issue might caused by HTTP/1.0 response.
+Video served by HTTP/1.0 will not be cached on any browser.
+Because only HTTP/1.1 have partial download.
 
 Resources
 ---------
