@@ -120,6 +120,7 @@ This fix not in RobustVideo.
 This issue might caused by HTTP/1.0 response.
 Video served by HTTP/1.0 will not be cached on any browser.
 Because only HTTP/1.1 have partial download.
+CloudFront serve HTTP/1.0 for a long time...
 
 Resources
 ---------
